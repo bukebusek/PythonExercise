@@ -14,8 +14,9 @@
 
 from abc import ABCMeta, abstractmethod
 from random import randint, randrange, sample
+import time
 
-class Fighter(object, metaclass=abstractmethod):
+class Fighter(object, metaclass=ABCMeta):
     """战斗者"""
     __slots__ = ('_name', '_hp')
     def __init__(self, name, hp):
@@ -39,7 +40,7 @@ class Fighter(object, metaclass=abstractmethod):
         return self._hp > 0
 
     @abstractmethod
-    def norma_lattack(self, other, injury):
+    def normal_attack(self, other):
         """
         普通攻击
         """
@@ -55,10 +56,10 @@ class Ultraman(Fighter):
 
     def normal_attack(self, other):
         injury = randint(15, 25)
-        other._hp -= injury
-        print('%s使用了普通攻击打了%s,%s掉了%s血' % self._name, other.name, other.name, injury)
+        other.hp -= injury
+        print('%s奥特曼使用了普通攻击打了%s,%s掉了%s血\n' % (self._name, other.name, other.name, injury))
 
-    def huge_attack(self, other, injury):
+    def huge_attack(self, other):
         """
         大招
         :param other: 被攻击对象
@@ -70,11 +71,11 @@ class Ultraman(Fighter):
             injury = other.hp * 3 // 4
             injury = injury if injury >= 50 else 50
             other.hp -= injury
-            print('%s使用了大招虐暴打了%s,%s掉了%s血' % self._name, other.name, other.name, injury)
+            print('%s奥特曼使用了大招虐暴打了%s,%s掉了%s血\n' % (self._name, other.name, other.name, injury))
             return True
         else:
+            print('%s奥特曼能量不足！只能使用普通攻击\n' % (self._name))
             self.normal_attack(other)
-            print('%s能量不足！只能使用普通攻击锤了%s!%s掉了%s血' % self._name, other.name, other.name, injury)
             return False
 
     def magic_attack(self, other):
@@ -83,24 +84,24 @@ class Ultraman(Fighter):
         :param other: 被攻击对象
         :return: 成功返回True，否则返回False
         """
-        print('%s准备使用魔法攻击！' % self._name)
+        print('%s奥特曼准备使用魔法攻击！\n' % self._name)
         if self._mp >= 20:
             self._mp -= 20
             injury = randint(10, 20)
             other.hp -= injury
-            list = [电刑, 火烧, 水淹, 刀刮]
-            injury_type = random.smaple(list, 1)
-            print('%s使用了魔法攻击%s了%s,%s掉了%s血' % self._name, other.name, injury_type, other.name, injury)
+            list = ['电刑', '火烧', '水淹', '刀刮']
+            injury_type = ''.join(sample(list, 1))
+            print('%s奥特曼使用了%s攻击了%s,%s掉了%s血\n' % (self._name, injury_type, other.name, other.name, injury))
             return True
         else:
-            print('%s能量不足！无法攻击' % self._name)
+            print('%s奥特曼能量不足！无法攻击\n' % self._name)
             return False
 
     def resume(self):
         """恢复魔法值"""
         incr_point = randint(1, 10)
         self._mp += incr_point
-        print('%s恢复了魔法值%s点' %self._name, incr_point)
+        print('%s奥特曼恢复了魔法值%s点\n' % (self._name, incr_point))
         return incr_point
 
 
@@ -117,8 +118,8 @@ class Monster(Fighter):
 
     def normal_attack(self, other):
         injury = randint(1, 10)
-        other._hp -= injury
-        print('大妖怪居然%s反击了%s,%s掉了%s血' % self._name, other.name, other.name, injury)
+        other.hp -= injury
+        print('大妖怪%s居然反击了%s,%s掉了%s血\n' % (self._name, other.name, other.name, injury))
 
     def __str__(self):
         return '~~~%s大妖怪~~~\n' % self._name + \
@@ -143,23 +144,28 @@ def select_alive_one(monsters):
 
 def display_info(ultraman, monsters):
     """显示奥特曼和小怪兽的信息"""
+    print("---------奥特曼和大妖怪们的状态--------\n")
     print(ultraman)
+    time.sleep(1)
     for monster in monsters:
         print(monster)
+        time.sleep(1)
 
 def main():
-    u = Ultraman('徐堃', 1000, 200)
-    m1 = Monster('董国舅', 750)
-    m2 = Monster('苗儿', 500)
-    m3 = Monster('小熊', 500)
+    u = Ultraman('徐堃', 200, 100)
+    m1 = Monster('董国舅', 100)
+    m2 = Monster('苗儿', 75)
+    m3 = Monster('小熊', 50)
     ms = [m1, m2, m3]
     fight_round = 1
+    print('========战斗开始========')
+    time.sleep(1)
     while u.alive > 0 and is_any_alive(ms):
         print('========第%02d回合========' % fight_round)
         m = select_alive_one(ms)
         skill = randint(1, 10)
         if skill <= 6:
-            u.attack(m)
+            u.normal_attack(m)
             u.resume()
         elif skill <= 9 :
             u.magic_attack(m)
@@ -169,9 +175,12 @@ def main():
         if m.alive > 0 :
             m.normal_attack(u)
 
+        time.sleep(2)
+
         display_info(u, ms)
 
         fight_round += 1
+
 
     print('\n========战斗结束!========\n')
 
