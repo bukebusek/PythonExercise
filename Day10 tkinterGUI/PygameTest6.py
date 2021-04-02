@@ -21,6 +21,7 @@ wuguiImg = pygame.image.load("/Users/momo/Desktop/白低于2.png").convert_alpha
 #pygame.mixer.music.load("C:\\Users\\Administrator\\Desktop\\game_music.mp3")
 #pygame.mixer.music.play(loops=0, start=0.0)
 #成绩文字显示
+
 count=0
 font =pygame.font.SysFont("arial", 40)
 score = font.render("score %d"%count, True, (255, 255, 255))
@@ -39,6 +40,7 @@ class Turtle:
         #乌龟坐标
         self.x=random.randint(0,500)
         self.y=random.randint(0,400)
+
     #乌龟移动的方法：移动方向均随机 第四条
     def move(self,new_x,new_y):
         #判断移动后是否超出边界
