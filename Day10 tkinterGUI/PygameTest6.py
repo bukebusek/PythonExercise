@@ -57,6 +57,7 @@ class Turtle:
             #不越界则移动乌龟的位置
             self.y=new_y
         self.power-=1 #乌龟每移动一次，体力消耗1
+
     def eat(self):
         self.power+=20 #乌龟吃掉鱼，乌龟体力增加20
         if self.power>100:
@@ -67,6 +68,7 @@ class Fish:
         #鱼坐标
         self.x=random.randint(0,500)
         self.y=random.randint(0,400)
+
     def move(self):
         new_x=self.x+random.choice([-10])
         if new_x<0:
